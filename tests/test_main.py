@@ -45,6 +45,7 @@ class AnswerQuestionTests(unittest.TestCase):
 
         self.assertEqual(result.status, "abstain")
         self.assertIsNone(result.passage)
+        self.assertIn("don't have an answer", result.message)
 
     def test_unmatched_specific_product_prevents_partial_answer(self):
         result = answer_question(

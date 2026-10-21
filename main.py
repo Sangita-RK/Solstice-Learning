@@ -101,7 +101,7 @@ def answer_question(question, docs):
         return SearchResult(
             "abstain",
             message=(
-                "I couldn't find enough matching documentation to answer reliably. "
+                "I don't have an answer for that in the documentation. "
                 "Try including the feature, action, or plan you're asking about."
             ),
         )
