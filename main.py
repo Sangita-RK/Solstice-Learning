@@ -16,7 +16,7 @@ STOP_WORDS = {
     "how", "i", "if", "in", "is", "it", "me", "my", "of", "on", "or",
     "our", "the", "their", "then", "this", "to", "us", "was", "we",
     "what", "when", "where", "which", "who", "why", "will", "with",
-    "number",
+    "long", "number", "use",
     "would", "you", "your",
 }
 
@@ -48,15 +48,32 @@ def _meaningful_tokens(text):
     return tokens
 
 
+def _query_tokens(text):
+    tokens = _meaningful_tokens(text)
+    password_change_terms = {
+        "change", "changing", "changed",
+        "update", "updating", "updated",
+        "modify", "modifying", "modified",
+        "reset", "resetting",
+    }
+    if "password" in tokens and tokens & password_change_terms:
+        tokens -= password_change_terms
+        tokens.add("reset")
+    return tokens
+
+
 def _passages(docs):
     for doc in docs:
-        for passage in re.split(r"(?<=[.!?])\s+", doc["content"].strip()):
-            if passage:
-                yield doc, passage
+        sentences = re.split(r"(?<=[.!?])\s+", doc["content"].strip())
+        for index, sentence in enumerate(sentences):
+            if sentence:
+                yield doc, sentence
+            if index + 1 < len(sentences) and sentence and sentences[index + 1]:
+                yield doc, f"{sentence} {sentences[index + 1]}"
 
 
 def answer_question(question, docs):
-    query_tokens = _meaningful_tokens(question)
+    query_tokens = _query_tokens(question)
     if not query_tokens:
         return SearchResult(
             "abstain",
@@ -71,6 +88,12 @@ def answer_question(question, docs):
         token: sum(token in tokens for tokens in document_tokens.values())
         for token in query_tokens
     }
+    if any(frequency == 0 for frequency in document_frequency.values()):
+        return SearchResult(
+            "abstain",
+            message="I don't have an answer for that.",
+        )
+
     query_weights = {
         token: log((len(document_tokens) + 1) / (document_frequency[token] + 1)) + 1
         for token in query_tokens
@@ -100,10 +123,7 @@ def answer_question(question, docs):
     if not ranked or ranked[0].score < MINIMUM_SCORE:
         return SearchResult(
             "abstain",
-            message=(
-                "I don't have an answer for that in the documentation. "
-                "Try including the feature, action, or plan you're asking about."
-            ),
+            message="I don't have an answer for that.",
         )
 
     plausible = [
@@ -154,7 +174,7 @@ def main():
         else:
             print(
                 result.message
-                or "I don't have an answer for that in the documentation."
+                or "I don't have an answer for that."
             )
 
 

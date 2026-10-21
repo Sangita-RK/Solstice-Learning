@@ -36,6 +36,21 @@ class AnswerQuestionTests(unittest.TestCase):
         self.assertEqual(result.doc_id, "D-03")
         self.assertIn("10,000 rows", result.passage)
 
+    def test_password_change_paraphrase_returns_reset_instructions(self):
+        for question in (
+            "How do I change my password?",
+            "I need to update my password",
+            "changing password",
+            "changing my password",
+        ):
+            with self.subTest(question=question):
+                result = answer_question(question, self.docs)
+
+                self.assertEqual(result.status, "answer")
+                self.assertEqual(result.doc_id, "D-01")
+                self.assertIn("Forgot password", result.passage)
+                self.assertIn("reset link", result.passage)
+
     def test_salesforce_question_abstains(self):
         example = next(
             item for item in self.examples if item["expected_doc_id"] is None
@@ -45,7 +60,7 @@ class AnswerQuestionTests(unittest.TestCase):
 
         self.assertEqual(result.status, "abstain")
         self.assertIsNone(result.passage)
-        self.assertIn("don't have an answer", result.message)
+        self.assertEqual(result.message, "I don't have an answer for that.")
 
     def test_unmatched_specific_product_prevents_partial_answer(self):
         result = answer_question(
@@ -55,6 +70,7 @@ class AnswerQuestionTests(unittest.TestCase):
 
         self.assertEqual(result.status, "abstain")
         self.assertIsNone(result.passage)
+        self.assertEqual(result.message, "I don't have an answer for that.")
 
     def test_single_generic_term_is_not_enough_evidence(self):
         result = answer_question("password", self.docs)
