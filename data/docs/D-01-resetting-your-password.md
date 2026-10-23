@@ -1,0 +1,3 @@
+# D-01: Resetting Your Password
+
+If you've forgotten your password, click 'Forgot password?' on the login screen and enter the email address associated with your account. We'll send you a reset link right away. Click the link and choose a new password that's at least 8 characters long, with at least one number. Once you've set a new password, you'll be logged out of all other active sessions for security. If you don't see the email within a few minutes, check your spam folder, and confirm you're using the same email your admin originally invited you with. Note: password reset links expire after 15 minutes. If yours has expired, don't try to reuse the old email -- just go back to the login page and request a brand new reset link.

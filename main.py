@@ -4,7 +4,7 @@ from math import log
 from pathlib import Path
 from typing import Literal
 
-from docs_qa_utils import load_docs, normalize_text
+from docs_qa_utils import load_docs_from_folder, normalize_text
 
 
 MINIMUM_SCORE = 0.6
@@ -151,8 +151,8 @@ def answer_question(question, docs):
 
 
 def main():
-    docs_path = Path(__file__).parent / "data" / "docs.json"
-    docs = load_docs(docs_path)
+    docs_folder = Path(__file__).parent / "data" / "docs"
+    docs = load_docs_from_folder(docs_folder)
 
     print("Docs Q&A Assistant (type 'quit' to exit)")
     while True:

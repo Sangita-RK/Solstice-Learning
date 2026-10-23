@@ -1,0 +1,3 @@
+# D-03: Exporting Reports to CSV
+
+Any report can be exported to CSV from the report toolbar by clicking the download icon and selecting 'Export as CSV'. The export includes all currently visible columns and respects any filters you've applied to the report. Large exports may take a minute or two to generate, and you'll get a notification when the file is ready to download. Exports are retained for 7 days before being automatically deleted from your download history, so be sure to save a local copy if you'll need it later. Important limit: CSV exports are capped at 10,000 rows. If your report has more rows than that, apply additional filters to narrow it down, or contact support about a bulk data export instead.
